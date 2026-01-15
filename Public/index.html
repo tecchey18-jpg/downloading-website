@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Video Downloader - 4K Quality</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-download"></i>
+                <span>VideoGrab Pro</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Download Videos in <span class="gradient-text">4K Quality</span></h1>
+            <p>Free, Fast & No Watermark - YouTube, Instagram, Facebook, TikTok & More</p>
+        </section>
+
+        <!-- Main Downloader -->
+        <main class="main-content">
+            <!-- Platform Selection -->
+            <div class="platform-selector">
+                <h2>Select Platform</h2>
+                <div class="platform-grid">
+                    <div class="platform-card" data-platform="youtube">
+                        <div class="platform-icon youtube">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <span>YouTube</span>
+                    </div>
+                    <div class="platform-card" data-platform="instagram">
+                        <div class="platform-icon instagram">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <span>Instagram</span>
+                    </div>
+                    <div class="platform-card" data-platform="facebook">
+                        <div class="platform-icon facebook">
+                            <i class="fab fa-facebook"></i>
+                        </div>
+                        <span>Facebook</span>
+                    </div>
+                    <div class="platform-card" data-platform="tiktok">
+                        <div class="platform-icon tiktok">
+                            <i class="fab fa-tiktok"></i>
+                        </div>
+                        <span>TikTok</span>
+                    </div>
+                    <div class="platform-card" data-platform="twitter">
+                        <div class="platform-icon twitter">
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                        <span>Twitter/X</span>
+                    </div>
+                    <div class="platform-card" data-platform="whatsapp">
+                        <div class="platform-icon whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <span>WhatsApp</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Type Selection (Dynamic) -->
+            <div class="content-type-selector hidden" id="contentTypeSelector">
+                <h2>Select Content Type</h2>
+                <div class="content-type-grid" id="contentTypeGrid">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="input-section hidden" id="inputSection">
+                <div class="input-tabs">
+                    <button class="input-tab active" data-input="url">
+                        <i class="fas fa-link"></i> Paste URL
+                    </button>
+                    <button class="input-tab" data-input="username" id="usernameTab">
+                        <i class="fas fa-user"></i> Username/ID
+                    </button>
+                </div>
+
+                <div class="input-container">
+                    <div class="input-wrapper" id="urlInput">
+                        <i class="fas fa-link input-icon"></i>
+                        <input type="text" id="mediaUrl" placeholder="Paste video/post URL here...">
+                        <button class="paste-btn" id="pasteBtn">
+                            <i class="fas fa-paste"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-wrapper hidden" id="usernameInput">
+                        <i class="fas fa-at input-icon"></i>
+                        <input type="text" id="username" placeholder="Enter username (without @)">
+                    </div>
+                </div>
+
+                <!-- Quality Selection -->
+                <div class="quality-selector">
+                    <h3>Select Quality</h3>
+                    <div class="quality-options">
+                        <label class="quality-option">
+                            <input type="radio" name="quality" value="2160" checked>
+                            <span class="quality-badge premium">4K (2160p)</span>
+                        </label>
+                        <label class="quality-option">
+                            <input type="radio" name="quality" value="1440">
+                            <span class="quality-badge">2K (1440p)</span>
+                        </label>
+                        <label class="quality-option">
+                            <input type="radio" name="quality" value="1080">
+                            <span class="quality-badge">Full HD (1080p)</span>
+                        </label>
+                        <label class="quality-option">
+                            <input type="radio" name="quality" value="720">
+                            <span class="quality-badge">HD (720p)</span>
+                        </label>
+                        <label class="quality-option">
+                            <input type="radio" name="quality" value="480">
+                            <span class="quality-badge">SD (480p)</span>
+                        </label>
+                        <label class="quality-option">
+                            <input type="radio" name="quality" value="360">
+                            <span class="quality-badge">Low (360p)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Additional Options -->
+                <div class="additional-options">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="includeAudio" checked>
+                        <span class="checkmark"></span>
+                        <span>Include Audio</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="removeWatermark" checked>
+                        <span class="checkmark"></span>
+                        <span>Remove Watermark</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="downloadThumbnail">
+                        <span class="checkmark"></span>
+                        <span>Download Thumbnail</span>
+                    </label>
+                </div>
+
+                <!-- Fetch Button -->
+                <button class="fetch-btn" id="fetchBtn">
+                    <i class="fas fa-search"></i>
+                    <span>Fetch Media</span>
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-state hidden" id="loadingState">
+                <div class="loader">
+                    <div class="loader-ring"></div>
+                    <div class="loader-ring"></div>
+                    <div class="loader-ring"></div>
+                </div>
+                <p id="loadingText">Fetching media information...</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section hidden" id="resultsSection">
+                <div class="result-card" id="resultCard">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Batch Download Section -->
+            <div class="batch-section hidden" id="batchSection">
+                <h2>Profile Content</h2>
+                <div class="batch-controls">
+                    <button class="select-all-btn" id="selectAllBtn">
+                        <i class="fas fa-check-double"></i> Select All
+                    </button>
+                    <button class="download-selected-btn" id="downloadSelectedBtn">
+                        <i class="fas fa-download"></i> Download Selected
+                    </button>
+                </div>
+                <div class="batch-grid" id="batchGrid">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Error Section -->
+            <div class="error-section hidden" id="errorSection">
+                <div class="error-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Oops! Something went wrong</h3>
+                    <p id="errorMessage"></p>
+                    <button class="retry-btn" id="retryBtn">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <h2>Why Choose VideoGrab Pro?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Download videos in seconds with our optimized servers</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>100% Safe</h3>
+                    <p>No malware, no viruses, just clean downloads</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hd"></i>
+                    </div>
+                    <h3>4K Quality</h3>
+                    <p>Download in the highest quality available up to 8K</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <h3>With Audio</h3>
+                    <p>All downloads include original audio track</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <h3>No Watermark</h3>
+                    <p>Clean downloads without any watermarks</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <h3>Unlimited</h3>
+                    <p>No download limits, download as many as you want</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works" id="how-it-works">
+            <h2>How It Works</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Select Platform</h3>
+                    <p>Choose the platform from which you want to download</p>
+                </div>
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Paste URL</h3>
+                    <p>Copy and paste the video/post URL or enter username</p>
+                </div>
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Download</h3>
+                    <p>Select quality and click download</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq-section" id="faq">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is this service free?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! VideoGrab Pro is completely free to use with no hidden charges.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can I download private account content?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No, we only support downloading from public accounts and posts.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What's the maximum quality available?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We support up to 8K quality, depending on the source video's original quality.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is there a download limit?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No, there are no download limits. Download as many videos as you want!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-download"></i>
+                        <span>VideoGrab Pro</span>
+                    </div>
+                    <p>The ultimate video downloading solution</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Supported Platforms</h4>
+                    <a href="#">YouTube</a>
+                    <a href="#">Instagram</a>
+                    <a href="#">Facebook</a>
+                    <a href="#">TikTok</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">DMCA</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 VideoGrab Pro. All rights reserved.</p>
+                <p>⚠️ For educational purposes only. Respect copyright laws.</p>
+            </div>
+        </footer>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
