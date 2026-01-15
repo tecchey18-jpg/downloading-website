@@ -1,50 +1,61 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
-const cheerio = require('cheerio');
+const facebookService = require('../services/facebookService');
 
-class FacebookAPI {
-    constructor() {
-        this.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive'
-        };
+// Fetch video info
+router.post('/fetch', async (req, res) => {
+    try {
+        const { input, type, inputType } = req.body;
+        
+        if (!input) {
+            return res.status(400).json({ error: 'URL is required' });
+        }
+        
+        let result;
+        
+        switch (type) {
+            case 'video':
+                result = await facebookService.getVideoInfo(input);
+                break;
+            case 'reel':
+                result = await facebookService.getReelInfo(input);
+                break;
+            case 'story':
+                result = await facebookService.getStoryInfo(input);
+                break;
+            default:
+                return res.status(400).json({ error: 'Invalid content type' });
+        }
+        
+        res.json(result);
+        
+    } catch (error) {
+        console.error('Facebook fetch error:', error);
+        res.status(500).json({ error: error.message || 'Failed to fetch video' });
     }
-    
-    async getVideoData(url) {
-        try {
-            // Convert mobile URL to desktop
-            url = url.replace('m.facebook.com', 'www.facebook.com');
-            url = url.replace('fb.watch', 'www.facebook.com/watch?v=');
+});
+
+// Download video
+router.post('/download', async (req, res) => {
+    try {
+        const { url, quality, mediaData } = req.body;
+        
+        const videoUrl = url || mediaData?.downloadUrl || mediaData?.url;
+        
+        if (!videoUrl) {
+            return res.status(400).json({ error: 'URL is required' });
+        }
+        
+        await facebookService.downloadVideo(videoUrl, quality, res);
+        
+    } catch (error) {
+        console.error('Facebook download error:', error);
+        if (!res.headersSent) {
+            res.status(500).json({ error: error.message || 'Download failed' });
+        }
+    }
+});
+
+module.exports = router;
             
-            const response = await axios.get(url, {
-                headers: this.headers,
-                timeout: 15000
-            });
-            
-            const html = response.data;
-            const $ = cheerio.load(html);
-            
-            // Extract video URLs from HTML
-            const sdMatch = html.match(/"sd_src":"([^"]+)"/);
-            const hdMatch = html.match(/"hd_src":"([^"]+)"/);
-            const sd2Match = html.match(/sd_src_no_ratelimit":"([^"]+)"/);
-            const hd2Match = html.match(/hd_src_no_ratelimit":"([^"]+)"/);
-            
-            // Try alternative patterns
-            const playableUrlMatch = html.match(/"playable_url":"([^"]+)"/);
-            const playableUrlHDMatch = html.match(/"playable_url_quality_hd":"([^"]+)"/);
-            
-            const sdUrl = this.decodeUrl(sdMatch?.[1] || sd2Match?.[1] || playableUrlMatch?.[1]);
-            const hdUrl = this.decodeUrl(hdMatch?.[1] || hd2Match?.[1] || playableUrlHDMatch?.[1]);
-            
-            if (!sdUrl && !hdUrl) {
-                throw new Error('Could not extract video URL');
-            }
-            
-            // Extract title
-            const titleMatch = html.match(/"title":"([^"]+)"/);
-            const title = titleMatch ? 
+           
